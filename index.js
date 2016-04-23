@@ -113,7 +113,7 @@ exports.handler = function (event, context) {
                     context.fail('Internal Error: The email could not be sent.');
                 } else {
                     console.log(data);           // successful response
-                    context.succeed('The email was successfully sent to ' + event.email);
+                    context.succeed('The message was successfully sent.');
                 }
             });
         }

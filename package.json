@@ -3,13 +3,13 @@
     "version": "0.1.4",
     "description": "AWS Lambda function to send email through Amazon SES.",
 
-    "homepage": "https://github.com/eleven41/aws-lambda-send-ses-email",
+    "homepage": "https://github.com/prominentedge/aws-lambda-send-ses-email",
     "author": {
-        "name": "Matt Houser"
+        "name": "Prominent Edge"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/eleven41/aws-lambda-send-ses-email.git"
+        "url": "https://github.com/prominentedge/aws-lambda-send-ses-email.git"
     },
 
     "dependencies": {
