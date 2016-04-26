@@ -7,19 +7,23 @@ var s3 = new aws.S3();
 
 exports.handler = function (event, context) {
     
+    //add template support.
+    // look in event.body for payload
     console.log("Event: " + JSON.stringify(event));
-    
+    console.log("Context", JSON.stringify(context));
+
     // Check required parameters
-    if (event.email == null) {
+    if (event.body.email == null) {
         context.fail('Bad Request: Missing required member: email');
         return;
     }
 
     var config = require('./config.js');
+    var templateName = event.template || config.templateKey;
     
     // Make sure some expected results are present
-    if (event.name == null) {
-        event.name = event.email;
+    if (event.body.name == null) {
+        event.body.name = event.body.email;
     }
     
     // Make sure we have a subject.
@@ -27,20 +31,20 @@ exports.handler = function (event, context) {
     // pull it from the configuration.
     // If we still don't have a subject, then
     // just make one up.
-    if (event.subject == null) {
-        event.subject = config.defaultSubject;
+    if (event.body.subject == null) {
+        event.body.subject = config.defaultSubject;
         
-        if (event.subject == null) {
-            event.subject = "Mail from {{name}}";
+        if (event.body.subject == null) {
+            event.body.subject = "Mail from {{name}}";
         }
     }
     
-    console.log('Loading template from ' + config.templateKey + ' in ' + config.templateBucket);
+    console.log('Loading template ' + templateName + ' from ' + config.templateBucket);
 
     // Read the template file
     s3.getObject({
         Bucket: config.templateBucket, 
-        Key: config.templateKey
+        Key: templateName
     }, function (err, data) {
         if (err) {
             // Error
@@ -51,8 +55,8 @@ exports.handler = function (event, context) {
             console.log("Template Body: " + templateBody);
             
             // Convert newlines in the message
-            if (event.message != null) {
-                event.message = event.message
+            if (event.body.message != null) {
+                event.body.message = event.body.message
                 .replace("\r\n", "<br />")
                 .replace("\r", "<br />")
                 .replace("\n", "<br />");
@@ -61,10 +65,10 @@ exports.handler = function (event, context) {
             // Perform the substitutions
             var mark = require('markup-js');
             
-            var subject = mark.up(event.subject, event);
+            var subject = mark.up(event.body.subject, event);
             console.log("Final subject: " + subject);
             
-            var message = mark.up(templateBody, event);
+            var message = mark.up(templateBody, event.body);
             console.log("Final message: " + message);
             
             var params = {
@@ -82,7 +86,7 @@ exports.handler = function (event, context) {
                 },
                 Source: config.fromAddress,
                 ReplyToAddresses: [
-                    event.name + '<' + event.email + '>'
+                    event.body.name + '<' + event.body.email + '>'
                 ]
             };
             

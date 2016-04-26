@@ -1,7 +1,8 @@
-﻿{
-    "email": "customer@customer-domain.com",
-    "name": "Customer Name",
-    "phone": "555-123-2132",
-    "subject": "This is the subject",
-    "message": "Hello World!\nGoing to the moon!"
+﻿{   "body": {
+        "email": "customer@customer-domain.com",
+        "name": "Customer Name",
+        "phone": "555-123-2132",
+        "subject": "This is the subject",
+        "message": "Hello World!\nGoing to the moon!"
+    }
 }
